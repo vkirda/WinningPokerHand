@@ -30,6 +30,9 @@ public class DecisionMaker {
     // Need duplicates
     private static final List<Rank> RANKS = new ArrayList<>();
 
+    private static final String PLAYER_1_WINS = "Player 1 wins!";
+    private static final String PLAYER_2_WINS = "Player 2 wins!";
+
     public static String decideWhoWins(List<Card> player1Cards, List<Card> player2Cards) {
 
         Hands player1Hand = determineWhatPlayerHas(player1Cards);
@@ -38,18 +41,18 @@ public class DecisionMaker {
         int compareHands = player1Hand.compareTo(player2Hand);
 
         if (compareHands < 0) {
-            return "Player 2 wins!";
+            return PLAYER_2_WINS;
         }
 
         if (compareHands == 0) {
 
-            return tieBreaker(player1Cards, player2Cards, player1Hand, player2Hand);
+            return tieBreaker(player1Cards, player2Cards, player1Hand);
         }
 
-        return "Player 1 wins!";
+        return PLAYER_1_WINS;
     }
 
-    private static String tieBreaker(List<Card> player1Cards, List<Card> player2Cards, Hands player1Hand, Hands player2Hand) {
+    private static String tieBreaker(List<Card> player1Cards, List<Card> player2Cards, Hands tiedHands) {
 
         List<Rank> player1Ranks = player1Cards.stream()
                 .map(Card::getRank)
@@ -64,98 +67,81 @@ public class DecisionMaker {
 
         int compareRanks;
 
-        if (player1Hand == ROYAL_FLUSH) {
+        if (tiedHands == ROYAL_FLUSH) {
 
             return "It's a tie!";
         }
 
-        if (player1Hand == STRAIGHT_FLUSH || player1Hand == FLUSH || player1Hand == STRAIGHT) {
+        if (tiedHands == STRAIGHT_FLUSH || tiedHands == FLUSH || tiedHands == STRAIGHT) {
 
             for (int i = player1Ranks.size() - 1; i >= 0; i--) {
+
                 compareRanks = player1Ranks.get(i).compareTo(player2Ranks.get(i));
+
                 if (compareRanks > 0) {
-                    return "Player 1 wins!";
+                    return PLAYER_1_WINS;
                 }
                 if (compareRanks < 0) {
-                    return "Player 2 wins!";
+                    return PLAYER_2_WINS;
                 }
             }
         }
 
-        if (player1Hand == FOUR_OF_A_KIND) {
+        if (tiedHands == FOUR_OF_A_KIND) {
 
-            Rank player1Rank = null;
-            Rank player2Rank = null;
-
-            for (int i = 0; i < player1Ranks.size(); i++) {
-                if (Collections.frequency(player1Ranks, player1Ranks.get(i)) == 4) {
-                    player1Rank = player1Ranks.get(i);
-                    break;
-                }
-            }
-
-            for (int i = 0; i < player2Ranks.size(); i++) {
-                if (Collections.frequency(player2Ranks, player2Ranks.get(i)) == 4) {
-                    player2Rank = player2Ranks.get(i);
-                    break;
-                }
-            }
+            Rank player1Rank = getHighestRankByFrequency(player1Ranks, 4);
+            Rank player2Rank = getHighestRankByFrequency(player2Ranks, 4);
 
             compareRanks = player1Rank.compareTo(player2Rank);
+
             if (compareRanks > 0) {
-                return "Player 1 wins!";
+                return PLAYER_1_WINS;
             }
             if (compareRanks < 0) {
-                return "Player 2 wins!";
+                return PLAYER_2_WINS;
             }
         }
 
-        if (player1Hand == FULL_HOUSE) {
+        if (tiedHands == FULL_HOUSE) {
 
-            Rank player1Rank = null;
-            Rank player2Rank = null;
-
-            for (int i = 0; i < player1Ranks.size(); i++) {
-                if (Collections.frequency(player1Ranks, player1Ranks.get(i)) == 3) {
-                    player1Rank = player1Ranks.get(i);
-                    break;
-                }
-            }
-
-            for (int i = 0; i < player2Ranks.size(); i++) {
-                if (Collections.frequency(player2Ranks, player2Ranks.get(i)) == 3) {
-                    player2Rank = player2Ranks.get(i);
-                    break;
-                }
-            }
-
-            compareRanks = player1Rank.compareTo(player2Rank);
-            if (compareRanks > 0) {
-                return "Player 1 wins!";
-            }
-            if (compareRanks < 0) {
-                return "Player 2 wins!";
-            }
+            return getWinnerByFrequency(player1Ranks, player2Ranks, 3);
         }
-
-/*        if (player1Hand == FLUSH) {
-
-            for (int i = player1Ranks.size() - 1; i >= 0; i--) {
-                compareRanks = player1Ranks.get(i).compareTo(player2Ranks.get(i));
-                if (compareRanks > 0) {
-                    return "Player 1 wins!";
-                }
-                if (compareRanks < 0) {
-                    return "Player 2 wins!";
-                }
-            }
-        }*/
 
 
         return "It's a tie!";
     }
 
-//    private static void compareAtIndexAndDecide/
+    private static String getWinnerByFrequency(List<Rank> player1Ranks, List<Rank> player2Ranks, int sameCardsAmount) {
+        
+        int compareRanks;
+        Rank player1Rank = getHighestRankByFrequency(player1Ranks, sameCardsAmount);
+        Rank player2Rank = getHighestRankByFrequency(player2Ranks, sameCardsAmount);
+
+        compareRanks = player1Rank.compareTo(player2Rank);
+
+        if (compareRanks > 0) {
+            return PLAYER_1_WINS;
+        }
+        if (compareRanks < 0) {
+            return PLAYER_2_WINS;
+        }
+        
+        throw new IllegalArgumentException("Unexpected arguments does not fit in the logic of the method. " + player1Ranks + ", " + player2Ranks);
+    }
+
+    private static Rank getHighestRankByFrequency(List<Rank> ranks, int sameCardsAmount) {
+
+        for (int i = 0; i < ranks.size(); i++) {
+
+            if (Collections.frequency(ranks, ranks.get(i)) == sameCardsAmount) {
+
+               return ranks.get(i);
+            }
+        }
+
+        throw new IllegalArgumentException("Unexpected arguments does not fit in the logic of the method. Ranks: " + ranks + ". Frequency: " + sameCardsAmount);
+    }
+
 
     private static String tieBreakerLogic(List<Card> player1Cards, List<Card> player2Cards) {
 
@@ -166,10 +152,10 @@ public class DecisionMaker {
 
         if (compareSuits < 0) {
 
-            return "Player 2 wins!";
+            return PLAYER_2_WINS;
         }
 
-        return "Player 1 wins!";
+        return PLAYER_1_WINS;
     }
 
 

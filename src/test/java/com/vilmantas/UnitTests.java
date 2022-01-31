@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.vilmantas.helpers.DecisionMaker.decideWhoWins;
@@ -41,29 +42,11 @@ class UnitTests extends TestCommons {
 
         Games games = mapGamesData(inputStream);
 
-        String actualCard1OfPlayer1Match1 = games.getPokerMatchList().get(0).getPlayer1Cards().get(0).getRankAndSuite();
-        String actualCard2OfPlayer1Match1 = games.getPokerMatchList().get(0).getPlayer1Cards().get(1).getRankAndSuite();
-        String actualCard3OfPlayer1Match1 = games.getPokerMatchList().get(0).getPlayer1Cards().get(2).getRankAndSuite();
-        String actualCard4OfPlayer1Match1 = games.getPokerMatchList().get(0).getPlayer1Cards().get(3).getRankAndSuite();
-        String actualCard5OfPlayer1Match1 = games.getPokerMatchList().get(0).getPlayer1Cards().get(4).getRankAndSuite();
+        List<String> actualCardsOfPlayer1Match1 = getPlayer1CardsFromFile(games, 0);
+        List<String> actualCardsOfPlayer2Match1 = getPlayer2CardsFromFile(games, 0);
 
-        String actualCard1OfPlayer2Match1 = games.getPokerMatchList().get(0).getPlayer2Cards().get(0).getRankAndSuite();
-        String actualCard2OfPlayer2Match1 = games.getPokerMatchList().get(0).getPlayer2Cards().get(1).getRankAndSuite();
-        String actualCard3OfPlayer2Match1 = games.getPokerMatchList().get(0).getPlayer2Cards().get(2).getRankAndSuite();
-        String actualCard4OfPlayer2Match1 = games.getPokerMatchList().get(0).getPlayer2Cards().get(3).getRankAndSuite();
-        String actualCard5OfPlayer2Match1 = games.getPokerMatchList().get(0).getPlayer2Cards().get(4).getRankAndSuite();
-
-        assertEquals("8C", actualCard1OfPlayer1Match1);
-        assertEquals("TS", actualCard2OfPlayer1Match1);
-        assertEquals("KC", actualCard3OfPlayer1Match1);
-        assertEquals("9H", actualCard4OfPlayer1Match1);
-        assertEquals("4S", actualCard5OfPlayer1Match1);
-
-        assertEquals("7D", actualCard1OfPlayer2Match1);
-        assertEquals("2S", actualCard2OfPlayer2Match1);
-        assertEquals("5D", actualCard3OfPlayer2Match1);
-        assertEquals("3S", actualCard4OfPlayer2Match1);
-        assertEquals("AC", actualCard5OfPlayer2Match1);
+        assertEquals(Arrays.asList("8C", "TS", "KC", "9H", "4S"), actualCardsOfPlayer1Match1);
+        assertEquals(Arrays.asList("7D", "2S", "5D", "3S", "AC"), actualCardsOfPlayer2Match1);
     }
 
     @Test
@@ -71,29 +54,11 @@ class UnitTests extends TestCommons {
 
         Games games = mapGamesData(inputStream);
 
-        String actualCard1OfPlayer1Match1 = games.getPokerMatchList().get(999).getPlayer1Cards().get(0).getRankAndSuite();
-        String actualCard2OfPlayer1Match1 = games.getPokerMatchList().get(999).getPlayer1Cards().get(1).getRankAndSuite();
-        String actualCard3OfPlayer1Match1 = games.getPokerMatchList().get(999).getPlayer1Cards().get(2).getRankAndSuite();
-        String actualCard4OfPlayer1Match1 = games.getPokerMatchList().get(999).getPlayer1Cards().get(3).getRankAndSuite();
-        String actualCard5OfPlayer1Match1 = games.getPokerMatchList().get(999).getPlayer1Cards().get(4).getRankAndSuite();
+        List<String> actualCardsOfPlayer1Match1000 = getPlayer1CardsFromFile(games, 999);
+        List<String> actualCardsOfPlayer2Match1000 = getPlayer2CardsFromFile(games, 999);
 
-        String actualCard1OfPlayer2Match1 = games.getPokerMatchList().get(999).getPlayer2Cards().get(0).getRankAndSuite();
-        String actualCard2OfPlayer2Match1 = games.getPokerMatchList().get(999).getPlayer2Cards().get(1).getRankAndSuite();
-        String actualCard3OfPlayer2Match1 = games.getPokerMatchList().get(999).getPlayer2Cards().get(2).getRankAndSuite();
-        String actualCard4OfPlayer2Match1 = games.getPokerMatchList().get(999).getPlayer2Cards().get(3).getRankAndSuite();
-        String actualCard5OfPlayer2Match1 = games.getPokerMatchList().get(999).getPlayer2Cards().get(4).getRankAndSuite();
-
-        assertEquals("AS", actualCard1OfPlayer1Match1);
-        assertEquals("KD", actualCard2OfPlayer1Match1);
-        assertEquals("3D", actualCard3OfPlayer1Match1);
-        assertEquals("JD", actualCard4OfPlayer1Match1);
-        assertEquals("8H", actualCard5OfPlayer1Match1);
-
-        assertEquals("7C", actualCard1OfPlayer2Match1);
-        assertEquals("8C", actualCard2OfPlayer2Match1);
-        assertEquals("5C", actualCard3OfPlayer2Match1);
-        assertEquals("QD", actualCard4OfPlayer2Match1);
-        assertEquals("6C", actualCard5OfPlayer2Match1);
+        assertEquals(Arrays.asList("AS", "KD", "3D", "JD", "8H"), actualCardsOfPlayer1Match1000);
+        assertEquals(Arrays.asList("7C", "8C", "5C", "QD", "6C"), actualCardsOfPlayer2Match1000);
     }
 
     @Test

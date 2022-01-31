@@ -315,4 +315,45 @@ class UnitTests extends TestCommons {
         String announceAWinner = decideWhoWins(player1cards, player2cards);
         assertEquals("Player 1 wins!", announceAWinner);
     }
+
+    @Test
+    void testTieBreakerThreeOfAKind() {
+
+        List<Card> player1cards = makeCards(asList("KD", "7H", "7S", "9C", "7C"));
+        List<Card> player2cards = makeCards(asList("6H", "JC", "6D", "6S", "8D"));
+
+        String announceAWinner = decideWhoWins(player1cards, player2cards);
+        assertEquals("Player 1 wins!", announceAWinner);
+    }
+
+    @Test
+    void testTieBreakerTwoOfAKindHighPair() {
+
+        List<Card> player1cards = makeCards(asList("JH", "JC", "6D", "6S", "8D"));
+        List<Card> player2cards = makeCards(asList("9D", "7H", "7S", "5C", "9H"));
+
+        String announceAWinner = decideWhoWins(player1cards, player2cards);
+        assertEquals("Player 1 wins!", announceAWinner);
+    }
+
+    @Test
+    void testTieBreakerTwoOfAKindLowPair() {
+
+        List<Card> player1cards = makeCards(asList("JH", "JC", "8D", "8S", "3D"));
+        List<Card> player2cards = makeCards(asList("JD", "JS", "7S", "7C", "9H"));
+
+        String announceAWinner = decideWhoWins(player1cards, player2cards);
+        assertEquals("Player 1 wins!", announceAWinner);
+    }
+
+    @Test
+    void testTieBreakerTwoOfAKindNotPairedCArd() {
+
+        List<Card> player1cards = makeCards(asList("JH", "JC", "8D", "8S", "5D"));
+        List<Card> player2cards = makeCards(asList("JD", "JS", "8H", "8C", "4H"));
+
+        String announceAWinner = decideWhoWins(player1cards, player2cards);
+        assertEquals("Player 1 wins!", announceAWinner);
+    }
+
 }

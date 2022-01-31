@@ -89,10 +89,44 @@ public class DecisionMaker {
 
         if (tiedHands == FOUR_OF_A_KIND) {
 
-            Rank player1Rank = getHighestRankByFrequency(player1Ranks, 4);
-            Rank player2Rank = getHighestRankByFrequency(player2Ranks, 4);
+            return getWinnerByFrequency(player1Ranks, player2Ranks, 4);
+        }
 
-            compareRanks = player1Rank.compareTo(player2Rank);
+        if (tiedHands == FULL_HOUSE || tiedHands == THREE_OF_A_KIND) {
+
+            return getWinnerByFrequency(player1Ranks, player2Ranks, 3);
+        }
+
+        if (tiedHands == TWO_PAIR) {
+
+            Rank player1NotPairedRank = getNotPairedRank(player1Ranks);
+            Rank player2NotPairedRank = getNotPairedRank(player2Ranks);
+
+            player1Ranks.remove(player1NotPairedRank);
+            player2Ranks.remove(player2NotPairedRank);
+
+            int highestPairIndex = player1Ranks.size() - 1;
+            int lowestPairIndex = 0;
+
+            compareRanks = player1Ranks.get(highestPairIndex).compareTo(player2Ranks.get(highestPairIndex));
+
+            if (compareRanks > 0) {
+                return PLAYER_1_WINS;
+            }
+            if (compareRanks < 0) {
+                return PLAYER_2_WINS;
+            }
+
+            compareRanks = player1Ranks.get(lowestPairIndex).compareTo(player2Ranks.get(lowestPairIndex));
+
+            if (compareRanks > 0) {
+                return PLAYER_1_WINS;
+            }
+            if (compareRanks < 0) {
+                return PLAYER_2_WINS;
+            }
+
+            compareRanks = player1NotPairedRank.compareTo(player2NotPairedRank);
 
             if (compareRanks > 0) {
                 return PLAYER_1_WINS;
@@ -102,17 +136,18 @@ public class DecisionMaker {
             }
         }
 
-        if (tiedHands == FULL_HOUSE) {
-
-            return getWinnerByFrequency(player1Ranks, player2Ranks, 3);
-        }
-
-
         return "It's a tie!";
     }
 
+    private static Rank getNotPairedRank(List<Rank> playerRanks) {
+        return playerRanks.stream()
+                .filter(rank -> Collections.frequency(playerRanks, rank) == 1)
+                .findFirst()
+                .get();
+    }
+
     private static String getWinnerByFrequency(List<Rank> player1Ranks, List<Rank> player2Ranks, int sameCardsAmount) {
-        
+
         int compareRanks;
         Rank player1Rank = getHighestRankByFrequency(player1Ranks, sameCardsAmount);
         Rank player2Rank = getHighestRankByFrequency(player2Ranks, sameCardsAmount);
@@ -122,10 +157,11 @@ public class DecisionMaker {
         if (compareRanks > 0) {
             return PLAYER_1_WINS;
         }
+
         if (compareRanks < 0) {
             return PLAYER_2_WINS;
         }
-        
+
         throw new IllegalArgumentException("Unexpected arguments does not fit in the logic of the method. " + player1Ranks + ", " + player2Ranks);
     }
 
@@ -135,29 +171,12 @@ public class DecisionMaker {
 
             if (Collections.frequency(ranks, ranks.get(i)) == sameCardsAmount) {
 
-               return ranks.get(i);
+                return ranks.get(i);
             }
         }
 
         throw new IllegalArgumentException("Unexpected arguments does not fit in the logic of the method. Ranks: " + ranks + ". Frequency: " + sameCardsAmount);
     }
-
-
-    private static String tieBreakerLogic(List<Card> player1Cards, List<Card> player2Cards) {
-
-        Suit player1Suit = player1Cards.get(0).getSuit();
-        Suit player2Suit = player1Cards.get(0).getSuit();
-
-        int compareSuits = player1Suit.compareTo(player2Suit);
-
-        if (compareSuits < 0) {
-
-            return PLAYER_2_WINS;
-        }
-
-        return PLAYER_1_WINS;
-    }
-
 
     public static Hands determineWhatPlayerHas(List<Card> playerHand) {
 

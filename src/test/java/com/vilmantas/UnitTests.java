@@ -7,16 +7,13 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.vilmantas.helpers.DecisionMaker.decideWhoWins;
+import static com.vilmantas.helpers.DecisionMaker.determineWhatPlayerHas;
 import static com.vilmantas.helpers.FileReader.getInputStream;
 import static com.vilmantas.helpers.InputStreamToString.getRawGameData;
 import static com.vilmantas.helpers.Mapper.mapGamesData;
-import static com.vilmantas.helpers.DecisionMaker.determineWhatPlayerHas;
-//import static com.vilmantas.helpers.DecisionMaker.ordinalStuff;
 import static com.vilmantas.model.enums.Hands.*;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -121,6 +118,7 @@ class UnitTests extends TestCommons {
 
         Games games = mapGamesData(inputStream);
         List<Card> cards = games.getPokerMatchList().get(0).getPlayer1Cards();
+
         Hands actualHand = determineWhatPlayerHas(cards);
 
         assertEquals(HIGH_CARD, actualHand);
@@ -141,6 +139,7 @@ class UnitTests extends TestCommons {
 
         Games games = mapGamesData(inputStream);
         List<Card> cards = games.getPokerMatchList().get(1).getPlayer1Cards();
+
         Hands actualHand = determineWhatPlayerHas(cards);
 
         assertEquals(TWO_PAIR, actualHand);
@@ -233,6 +232,7 @@ class UnitTests extends TestCommons {
         List<Card> player2cards = makeCards(asList("KH", "KC", "JH", "TH", "3S"));
 
         String announceAWinner = decideWhoWins(player1cards, player2cards);
+
         assertEquals("Player 1 wins!", announceAWinner);
     }
 
@@ -243,6 +243,7 @@ class UnitTests extends TestCommons {
         List<Card> player2cards = makeCards(asList("3H", "QH", "JH", "TH", "2H"));
 
         String announceAWinner = decideWhoWins(player1cards, player2cards);
+
         assertEquals("Player 2 wins!", announceAWinner);
     }
 
@@ -253,6 +254,7 @@ class UnitTests extends TestCommons {
         List<Card> player2cards = makeCards(asList("TC", "JC", "QC", "KC", "AC"));
 
         String announceAWinner = decideWhoWins(player1cards, player2cards);
+
         assertEquals("It's a tie!", announceAWinner);
     }
 
@@ -263,6 +265,7 @@ class UnitTests extends TestCommons {
         List<Card> player2cards = makeCards(asList("KC", "QC", "JC", "TC", "9C"));
 
         String announceAWinner = decideWhoWins(player1cards, player2cards);
+
         assertEquals("It's a tie!", announceAWinner);
     }
 
@@ -273,6 +276,7 @@ class UnitTests extends TestCommons {
         List<Card> player2cards = makeCards(asList("QC", "JC", "TC", "9C", "8C"));
 
         String announceAWinner = decideWhoWins(player1cards, player2cards);
+
         assertEquals("Player 1 wins!", announceAWinner);
     }
 
@@ -283,6 +287,7 @@ class UnitTests extends TestCommons {
         List<Card> player2cards = makeCards(asList("3C", "3D", "3S", "3H", "2C"));
 
         String announceAWinner = decideWhoWins(player1cards, player2cards);
+
         assertEquals("Player 1 wins!", announceAWinner);
     }
 
@@ -293,6 +298,7 @@ class UnitTests extends TestCommons {
         List<Card> player2cards = makeCards(asList("3C", "3D", "3S", "5H", "5C"));
 
         String announceAWinner = decideWhoWins(player1cards, player2cards);
+
         assertEquals("Player 1 wins!", announceAWinner);
     }
 
@@ -303,6 +309,7 @@ class UnitTests extends TestCommons {
         List<Card> player2cards = makeCards(asList("KC", "QC", "JC", "TC", "5C"));
 
         String announceAWinner = decideWhoWins(player1cards, player2cards);
+
         assertEquals("Player 1 wins!", announceAWinner);
     }
 
@@ -313,6 +320,7 @@ class UnitTests extends TestCommons {
         List<Card> player2cards = makeCards(asList("QC", "JC", "TC", "9D", "8D"));
 
         String announceAWinner = decideWhoWins(player1cards, player2cards);
+
         assertEquals("Player 1 wins!", announceAWinner);
     }
 
@@ -323,6 +331,7 @@ class UnitTests extends TestCommons {
         List<Card> player2cards = makeCards(asList("6H", "JC", "6D", "6S", "8D"));
 
         String announceAWinner = decideWhoWins(player1cards, player2cards);
+
         assertEquals("Player 1 wins!", announceAWinner);
     }
 
@@ -333,6 +342,7 @@ class UnitTests extends TestCommons {
         List<Card> player2cards = makeCards(asList("9D", "7H", "7S", "5C", "9H"));
 
         String announceAWinner = decideWhoWins(player1cards, player2cards);
+
         assertEquals("Player 1 wins!", announceAWinner);
     }
 
@@ -343,6 +353,7 @@ class UnitTests extends TestCommons {
         List<Card> player2cards = makeCards(asList("JD", "JS", "7S", "7C", "9H"));
 
         String announceAWinner = decideWhoWins(player1cards, player2cards);
+
         assertEquals("Player 1 wins!", announceAWinner);
     }
 
@@ -353,6 +364,7 @@ class UnitTests extends TestCommons {
         List<Card> player2cards = makeCards(asList("JD", "JS", "8H", "8C", "4H"));
 
         String announceAWinner = decideWhoWins(player1cards, player2cards);
+
         assertEquals("Player 1 wins!", announceAWinner);
     }
 
@@ -363,6 +375,7 @@ class UnitTests extends TestCommons {
         List<Card> player2cards = makeCards(asList("JD", "JS", "9H", "7C", "4H"));
 
         String announceAWinner = decideWhoWins(player1cards, player2cards);
+
         assertEquals("Player 1 wins!", announceAWinner);
     }
 
@@ -373,6 +386,29 @@ class UnitTests extends TestCommons {
         List<Card> player2cards = makeCards(asList("JS", "JD", "8H", "7C", "4D"));
 
         String announceAWinner = decideWhoWins(player1cards, player2cards);
+
+        assertEquals("Player 1 wins!", announceAWinner);
+    }
+
+    @Test
+    void testTieBreakerHighCard() {
+
+        List<Card> player1cards = makeCards(asList("4H", "6C", "8D", "TS", "KD"));
+        List<Card> player2cards = makeCards(asList("4H", "6C", "8D", "9S", "KD"));
+
+        String announceAWinner = decideWhoWins(player1cards, player2cards);
+
+        assertEquals("Player 1 wins!", announceAWinner);
+    }
+
+    @Test
+    void testTieBreakerHighCardLast() {
+
+        List<Card> player1cards = makeCards(asList("5H", "6C", "8D", "TS", "KD"));
+        List<Card> player2cards = makeCards(asList("4C", "6H", "8H", "TH", "KH"));
+
+        String announceAWinner = decideWhoWins(player1cards, player2cards);
+
         assertEquals("Player 1 wins!", announceAWinner);
     }
 

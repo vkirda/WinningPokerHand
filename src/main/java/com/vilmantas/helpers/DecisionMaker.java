@@ -62,9 +62,6 @@ public class DecisionMaker {
                 .map(Card::getRank)
                 .collect(Collectors.toList());
 
-        Collections.sort(player1Ranks);
-        Collections.sort(player2Ranks);
-
         int compareRanks;
 
         if (tiedHands == ROYAL_FLUSH) {
@@ -72,9 +69,12 @@ public class DecisionMaker {
             return "It's a tie!";
         }
 
-        if (tiedHands == STRAIGHT_FLUSH || tiedHands == FLUSH || tiedHands == STRAIGHT ) {
+        if (tiedHands == STRAIGHT_FLUSH || tiedHands == FLUSH || tiedHands == STRAIGHT || tiedHands == HIGH_CARD) {
 
-            for (int i = player1Ranks.size() - 1; i >= 0; i--) {
+            Collections.reverse(player1Ranks);
+            Collections.reverse(player2Ranks);
+
+            for (int i = 0; i < player1Ranks.size(); i++) {
 
                 compareRanks = player1Ranks.get(i).compareTo(player2Ranks.get(i));
 
@@ -99,8 +99,11 @@ public class DecisionMaker {
 
         if (tiedHands == TWO_PAIR) {
 
-            Rank player1NotPairedRank = getNotPairedRank(player1Ranks);
-            Rank player2NotPairedRank = getNotPairedRank(player2Ranks);
+            Collections.sort(player1Ranks);
+            Collections.sort(player2Ranks);
+
+            Rank player1NotPairedRank = getRankByFrequency(player1Ranks, 1);
+            Rank player2NotPairedRank = getRankByFrequency(player2Ranks, 1);
 
             player1Ranks.remove(player1NotPairedRank);
             player2Ranks.remove(player2NotPairedRank);
@@ -136,10 +139,13 @@ public class DecisionMaker {
             }
         }
 
-        if ( tiedHands == PAIR) {
+        if (tiedHands == PAIR) {
 
-            Rank player1Rank = getHighestRankByFrequency(player1Ranks, 2);
-            Rank player2Rank = getHighestRankByFrequency(player2Ranks, 2);
+            Collections.reverse(player1Ranks);
+            Collections.reverse(player2Ranks);
+
+            Rank player1Rank = getRankByFrequency(player1Ranks, 2);
+            Rank player2Rank = getRankByFrequency(player2Ranks, 2);
 
             compareRanks = player1Rank.compareTo(player2Rank);
 
@@ -154,7 +160,7 @@ public class DecisionMaker {
             player1Ranks.removeAll(Collections.singleton(player1Rank));
             player2Ranks.removeAll(Collections.singleton(player2Rank));
 
-            for (int i = player1Ranks.size() - 1; i >= 0; i--) {
+            for (int i = 0; i < player1Ranks.size(); i++) {
 
                 compareRanks = player1Ranks.get(i).compareTo(player2Ranks.get(i));
 
@@ -171,43 +177,33 @@ public class DecisionMaker {
         return "It's a tie!";
     }
 
-    private static Rank getNotPairedRank(List<Rank> playerRanks) {
-        return playerRanks.stream()
-                .filter(rank -> Collections.frequency(playerRanks, rank) == 1)
-                .findFirst()
-                .get();
-    }
-
     private static String getWinnerByFrequency(List<Rank> player1Ranks, List<Rank> player2Ranks, int sameCardsAmount) {
 
         int compareRanks;
-        Rank player1Rank = getHighestRankByFrequency(player1Ranks, sameCardsAmount);
-        Rank player2Rank = getHighestRankByFrequency(player2Ranks, sameCardsAmount);
+        Rank player1Rank = getRankByFrequency(player1Ranks, sameCardsAmount);
+        Rank player2Rank = getRankByFrequency(player2Ranks, sameCardsAmount);
 
         compareRanks = player1Rank.compareTo(player2Rank);
 
         if (compareRanks > 0) {
+
             return PLAYER_1_WINS;
         }
 
         if (compareRanks < 0) {
+
             return PLAYER_2_WINS;
         }
 
         throw new IllegalArgumentException("Unexpected arguments does not fit in the logic of the method. " + player1Ranks + ", " + player2Ranks);
     }
 
-    private static Rank getHighestRankByFrequency(List<Rank> ranks, int sameCardsAmount) {
+    private static Rank getRankByFrequency(List<Rank> ranks, int sameCardsAmount) {
 
-        for (int i = 0; i < ranks.size(); i++) {
-
-            if (Collections.frequency(ranks, ranks.get(i)) == sameCardsAmount) {
-
-                return ranks.get(i);
-            }
-        }
-
-        throw new IllegalArgumentException("Unexpected arguments does not fit in the logic of the method. Ranks: " + ranks + ". Frequency: " + sameCardsAmount);
+        return ranks.stream()
+                .filter(rank -> Collections.frequency(ranks, rank) == sameCardsAmount)
+                .findFirst()
+                .get();
     }
 
     public static Hands determineWhatPlayerHas(List<Card> playerHand) {
@@ -276,13 +272,11 @@ public class DecisionMaker {
     private static boolean isRoyalFlush() {
 
         return RANKS_UNIQUE_SORTED.contains(Rank.ACE) && RANKS_UNIQUE_SORTED.contains(Rank.KING) && isFlush() && isStraight();
-
     }
 
     private static boolean isStraightFlush() {
 
         return (!RANKS_UNIQUE_SORTED.contains(Rank.ACE) || !RANKS_UNIQUE_SORTED.contains(Rank.KING)) && isFlush() && isStraight();
-
     }
 
     private static boolean isFourOfAKind() {
@@ -341,7 +335,6 @@ public class DecisionMaker {
         return (isRanksSameAtIndex(0, 1) && isRanksSameAtIndex(2, 3)) ||
                 (isRanksSameAtIndex(0, 1) && isRanksSameAtIndex(3, 4)) ||
                 (isRanksSameAtIndex(1, 2) && isRanksSameAtIndex(3, 4));
-
     }
 
     private static boolean isPair() {

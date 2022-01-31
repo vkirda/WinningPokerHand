@@ -52,6 +52,51 @@ public class DecisionMaker {
         return PLAYER_1_WINS;
     }
 
+    public static Hands determineWhatPlayerHas(List<Card> playerHand) {
+
+        loadListsAndSets(playerHand);
+
+        if (isRoyalFlush()) {
+            tearDown();
+            return ROYAL_FLUSH;
+        }
+        if (isStraightFlush()) {
+            tearDown();
+            return STRAIGHT_FLUSH;
+        }
+        if (isFourOfAKind()) {
+            tearDown();
+            return FOUR_OF_A_KIND;
+        }
+        if (isFullHouse()) {
+            tearDown();
+            return FULL_HOUSE;
+        }
+        if (isFlush()) {
+            tearDown();
+            return FLUSH;
+        }
+        if (isStraight()) {
+            tearDown();
+            return STRAIGHT;
+        }
+        if (isThreeOfAKind()) {
+            tearDown();
+            return THREE_OF_A_KIND;
+        }
+        if (isTwoPair()) {
+            tearDown();
+            return TWO_PAIR;
+        }
+        if (isPair()) {
+            tearDown();
+            return PAIR;
+        }
+
+        tearDown();
+        return HIGH_CARD;
+    }
+
     private static String tieBreaker(List<Card> player1Cards, List<Card> player2Cards, Hands tiedHands) {
 
         List<Rank> player1Ranks = player1Cards.stream()
@@ -64,11 +109,13 @@ public class DecisionMaker {
 
         int compareRanks;
 
+        // Winner could be determined by the suit for Royal Flush. But this is not in the requirements.
         if (tiedHands == ROYAL_FLUSH) {
 
             return "It's a tie!";
         }
 
+        // Same way to determine winner for those, because all 5 cards is unique. So sorting, looping, and comparing.
         if (tiedHands == STRAIGHT_FLUSH || tiedHands == FLUSH || tiedHands == STRAIGHT || tiedHands == HIGH_CARD) {
 
             Collections.reverse(player1Ranks);
@@ -87,16 +134,20 @@ public class DecisionMaker {
             }
         }
 
+        // Finding rank that repeats 4 times. Then comparing that rank.
         if (tiedHands == FOUR_OF_A_KIND) {
 
             return getWinnerByFrequency(player1Ranks, player2Ranks, 4);
         }
 
+        // Finding rank that repeats 3 times. Then comparing that rank. Same logic for Three of a kind and Full house.
         if (tiedHands == FULL_HOUSE || tiedHands == THREE_OF_A_KIND) {
 
             return getWinnerByFrequency(player1Ranks, player2Ranks, 3);
         }
 
+        // Sorting ranks, removing not paired rank. Then checking for highest pair. If highest pair is the same -
+        // then checking for lowest pair. If lowest pair is the same - then checking not paired card.
         if (tiedHands == TWO_PAIR) {
 
             Collections.sort(player1Ranks);
@@ -139,6 +190,8 @@ public class DecisionMaker {
             }
         }
 
+        // Sorting ranks. Finding rank that repeats 2 times. Then comparing that rank. If ties -
+        // removing paired cards, then Looping and comparing.
         if (tiedHands == PAIR) {
 
             Collections.reverse(player1Ranks);
@@ -204,51 +257,6 @@ public class DecisionMaker {
                 .filter(rank -> Collections.frequency(ranks, rank) == sameCardsAmount)
                 .findFirst()
                 .get();
-    }
-
-    public static Hands determineWhatPlayerHas(List<Card> playerHand) {
-
-        loadListsAndSets(playerHand);
-
-        if (isRoyalFlush()) {
-            tearDown();
-            return ROYAL_FLUSH;
-        }
-        if (isStraightFlush()) {
-            tearDown();
-            return STRAIGHT_FLUSH;
-        }
-        if (isFourOfAKind()) {
-            tearDown();
-            return FOUR_OF_A_KIND;
-        }
-        if (isFullHouse()) {
-            tearDown();
-            return FULL_HOUSE;
-        }
-        if (isFlush()) {
-            tearDown();
-            return FLUSH;
-        }
-        if (isStraight()) {
-            tearDown();
-            return STRAIGHT;
-        }
-        if (isThreeOfAKind()) {
-            tearDown();
-            return THREE_OF_A_KIND;
-        }
-        if (isTwoPair()) {
-            tearDown();
-            return TWO_PAIR;
-        }
-        if (isPair()) {
-            tearDown();
-            return PAIR;
-        }
-
-        tearDown();
-        return HIGH_CARD;
     }
 
     private static void loadListsAndSets(List<Card> playerHand) {

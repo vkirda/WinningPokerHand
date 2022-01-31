@@ -72,7 +72,7 @@ public class DecisionMaker {
             return "It's a tie!";
         }
 
-        if (tiedHands == STRAIGHT_FLUSH || tiedHands == FLUSH || tiedHands == STRAIGHT) {
+        if (tiedHands == STRAIGHT_FLUSH || tiedHands == FLUSH || tiedHands == STRAIGHT ) {
 
             for (int i = player1Ranks.size() - 1; i >= 0; i--) {
 
@@ -134,6 +134,38 @@ public class DecisionMaker {
             if (compareRanks < 0) {
                 return PLAYER_2_WINS;
             }
+        }
+
+        if ( tiedHands == PAIR) {
+
+            Rank player1Rank = getHighestRankByFrequency(player1Ranks, 2);
+            Rank player2Rank = getHighestRankByFrequency(player2Ranks, 2);
+
+            compareRanks = player1Rank.compareTo(player2Rank);
+
+            if (compareRanks > 0) {
+                return PLAYER_1_WINS;
+            }
+
+            if (compareRanks < 0) {
+                return PLAYER_2_WINS;
+            }
+
+            player1Ranks.removeAll(Collections.singleton(player1Rank));
+            player2Ranks.removeAll(Collections.singleton(player2Rank));
+
+            for (int i = player1Ranks.size() - 1; i >= 0; i--) {
+
+                compareRanks = player1Ranks.get(i).compareTo(player2Ranks.get(i));
+
+                if (compareRanks > 0) {
+                    return PLAYER_1_WINS;
+                }
+                if (compareRanks < 0) {
+                    return PLAYER_2_WINS;
+                }
+            }
+
         }
 
         return "It's a tie!";

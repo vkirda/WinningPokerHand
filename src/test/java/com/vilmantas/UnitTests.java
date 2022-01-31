@@ -327,7 +327,7 @@ class UnitTests extends TestCommons {
     }
 
     @Test
-    void testTieBreakerTwoOfAKindHighPair() {
+    void testTieBreakerTwoPairHigh() {
 
         List<Card> player1cards = makeCards(asList("JH", "JC", "6D", "6S", "8D"));
         List<Card> player2cards = makeCards(asList("9D", "7H", "7S", "5C", "9H"));
@@ -337,7 +337,7 @@ class UnitTests extends TestCommons {
     }
 
     @Test
-    void testTieBreakerTwoOfAKindLowPair() {
+    void testTieBreakerTwoPairLow() {
 
         List<Card> player1cards = makeCards(asList("JH", "JC", "8D", "8S", "3D"));
         List<Card> player2cards = makeCards(asList("JD", "JS", "7S", "7C", "9H"));
@@ -347,10 +347,30 @@ class UnitTests extends TestCommons {
     }
 
     @Test
-    void testTieBreakerTwoOfAKindNotPairedCArd() {
+    void testTieBreakerTwoPairNotPairedCard() {
 
         List<Card> player1cards = makeCards(asList("JH", "JC", "8D", "8S", "5D"));
         List<Card> player2cards = makeCards(asList("JD", "JS", "8H", "8C", "4H"));
+
+        String announceAWinner = decideWhoWins(player1cards, player2cards);
+        assertEquals("Player 1 wins!", announceAWinner);
+    }
+
+    @Test
+    void testTieBreakerHigherPair() {
+
+        List<Card> player1cards = makeCards(asList("QH", "QC", "8D", "7S", "5D"));
+        List<Card> player2cards = makeCards(asList("JD", "JS", "9H", "7C", "4H"));
+
+        String announceAWinner = decideWhoWins(player1cards, player2cards);
+        assertEquals("Player 1 wins!", announceAWinner);
+    }
+
+    @Test
+    void testTieBreakerPairWithSecondCard() {
+
+        List<Card> player1cards = makeCards(asList("JH", "JC", "8D", "7S", "5D"));
+        List<Card> player2cards = makeCards(asList("JS", "JD", "8H", "7C", "4D"));
 
         String announceAWinner = decideWhoWins(player1cards, player2cards);
         assertEquals("Player 1 wins!", announceAWinner);
